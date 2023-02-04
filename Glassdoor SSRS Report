@@ -1,0 +1,167 @@
+-- Programming languages statistic
+
+SELECT TOP 1 (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE Python = 1)  as 'Python'
+	 , (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE R = 1) as 'R'
+	 , (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE Spark = 1) as 'Spark'
+	 , (SELECT CAST( COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE AWS = 1) as 'AWS'
+	 , (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE Excel = 1) as 'Excel'
+	 , COUNT(*) AS 'Total'
+FROM vw.fJobSummary
+;
+
+-- Top 10 of Salary
+
+SELECT TOP 10 RANK() OVER (ORDER BY AvgSalary DESC) as 'Top 10'
+	 , CompanyName
+	 , JobTitle
+	 , MinSalary
+	 , MaxSalary
+	 , AvgSalary
+FROM vw.fJobSummary
+;
+
+-- General
+
+SELECT TOP 10 RANK() OVER (ORDER BY AvgSalary DESC) as 'Top 10'
+	 , CompanyName
+	 , JobTitle
+	 , AvgSalary
+     , IIF(Python = 1, 'Y', 'N') AS 'Python'
+FROM vw.fJobSummary
+;
+
+-- Top 10 of Salry for Data Scientist
+
+SELECT TOP 10 RANK() OVER (ORDER BY AvgSalary DESC) as 'Top 10'
+	 , CompanyName
+	 , MinSalary
+	 , MaxSalary
+	 , AvgSalary
+FROM vw.fJobSummary
+WHERE JobTitle = 'Data Scientist'
+;
+
+SELECT TOP 10 RANK() OVER (ORDER BY AvgSalary DESC) as 'Top 10'
+	 , CompanyName
+	 , MinSalary
+	 , MaxSalary
+	 , AvgSalary
+FROM vw.fJobSummary
+WHERE JobTitle LIKE '%Data Scientist%'
+;
+-- Average Salary in general
+
+SELECT Avg(MinSalary) as 'AvgMin'
+	 , Avg(MaxSalary) as 'AvgMax'
+	 , ROUND(Avg(AvgSalary),0) as 'AvgofAvg'
+FROM vw.fJobsummary
+;
+
+/*
+-- Top 10 of company
+
+SELECT TOP 20 Rank () OVER (ORDER BY CompanyAge DESC) as 'Top 20'
+	 , CompanyName
+	 , CompanyAge
+	 , JobTitle
+	 , MinSalary
+	 , MaxSalary
+	 , AvgSalary
+FROM vw.fJobSummary
+;
+*/
+-- Top 5 of high rating job title
+
+SELECT TOP 1 (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Data Analyst%')  as 'Data Analyst'
+	 , (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Data Engineer%') as 'Data Engineer'
+	 , (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Data Scientist%') as 'Data Scientist'
+	 , (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Senior Data Analyst%') as 'Senior Data Analyst'
+	 , (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Senior Data Scientist%') as 'Senior Data Scientist'
+	 ,( 467-(SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Data Analyst%') 
+		- (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Data Engineer%')
+		- (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Data Scientist%')
+		-  (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Senior Data Analyst%')
+		- (SELECT CAST(COUNT(*) AS INT)
+		FROM vw.fJobSummary
+		WHERE JobTitle LIKE '%Senior Data Scientist%')) as 'Orther'
+		, COUNT(*) AS 'JobsTotal'
+FROM vw.fJobSummary
+;
+
+/*
+
+DECLARE @jobtitle nvarchar(25)
+
+SELECT JobID
+	 , JobTitle
+	 , CompanyName
+	 , Rating
+	 , EstimatedSalary
+FROM vw.fJobSummary
+WHERE JobTitle = @jobtitle
+GROUP BY JobID
+	 , JobTitle
+	 , CompanyName
+	  , Rating
+	 , EstimatedSalary
+*/
+
+/*
+SELECT JobID
+	 , CompanyName
+	 , JobTitle
+	 , JobDescription
+	 , MinSalary
+	 , MaxSalary
+	 , AvgSalary
+	 , COUNT(*) as 'JobCnt'
+FROM vw.fJobSummary
+WHERE JobTitle IN ('Data Analyst', 'Data Engineer', 'Data Scientist', 'Lead Data Scientist', 'Senior Data Analyst', 'Senior Data Scientist')
+GROUP BY JobID	
+	 , CompanyName
+	 , JobTitle
+	 , JobDescription
+	 , MinSalary
+	 , MaxSalary
+	 , AvgSalary
+--HAVING COUNT(JobTitle) > 1
+;
+/*
+SELECT TOP 15 RANK() OVER (ORDER BY AvgSalary ASC) as 'Top 15'
+	 , JobTitle
+	 , EstimatedSalary
+	 , JobDescription
+	 , MinSalary
+	 , MaxSalary
+	 , AvgSalary
+FROM vw.fJobSummary
+;
+*/
